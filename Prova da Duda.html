@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prova da Duda</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#E4EAF8;--paper:#FFFEFA;--ink:#1F2347;--soft:#5B6090;--line:#D5DBF0;--red:#D93A46;--green:#1E9E6A;--hl:#FFE66D;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12142A;--paper:#1D2040;--ink:#F1F2FF;--soft:#A7ABD6;--line:#34386A;--red:#FF7B84;--green:#5FD9A4;--hl:#6B5E12}}
+:root[data-theme="dark"]{--bg:#12142A;--paper:#1D2040;--ink:#F1F2FF;--soft:#A7ABD6;--line:#34386A;--red:#FF7B84;--green:#5FD9A4;--hl:#6B5E12}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}
+main{max-width:640px;margin:0 auto;padding:28px 14px 80px}
+.sheet{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:26px 22px 30px}
+h1{font-family:"Caveat","Segoe Script",cursive;font-size:clamp(40px,11vw,58px);line-height:1;margin:0 0 6px;font-weight:700}
+.meta{display:flex;gap:18px;flex-wrap:wrap;color:var(--soft);font-size:14px;margin:10px 0 18px}
+.meta span{border-bottom:2px solid var(--line);padding:0 4px 2px;min-width:110px}
+.rules{background:linear-gradient(transparent 55%,var(--hl) 55%);display:inline;font-weight:600}
+.q{margin-top:30px;padding-top:22px;border-top:2px dashed var(--line)}
+.q h2{font-size:18px;line-height:1.45;margin:0 0 14px;font-weight:800}
+.opt{all:unset;box-sizing:border-box;display:flex;gap:12px;width:100%;padding:11px 14px;margin-bottom:9px;border:2px solid var(--line);border-radius:10px;cursor:pointer;font-size:16px;line-height:1.4;transition:border-color .2s,background .2s}
+.opt:hover{border-color:var(--soft)}
+.opt:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.opt b{flex:none;width:22px}
+.opt.wrong{text-decoration:line-through;opacity:.55;border-color:var(--red);cursor:default;animation:sh .35s}
+.opt.right{border-color:var(--green);background:color-mix(in srgb,var(--green) 14%,transparent)}
+.q.done .opt:not(.right){opacity:.45;cursor:default}
+.note{font-family:"Caveat","Segoe Script",cursive;font-size:25px;line-height:1.25;color:var(--red);margin:6px 0 0;transform:rotate(-1deg)}
+.note.ok{color:var(--green)}
+.story{margin:10px 0 0;color:var(--soft);font-size:15px}
+@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.final{margin-top:30px;padding-top:22px;border-top:2px dashed var(--line);text-align:center}
+.final p{margin:0 0 14px}
+.btn{all:unset;box-sizing:border-box;cursor:pointer;background:var(--ink);color:var(--paper);font-weight:800;padding:13px 26px;border-radius:999px}
+.btn:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+.letter{margin-top:26px;text-align:left;padding:22px 20px;border:1px solid var(--line);border-radius:10px;background-image:repeating-linear-gradient(transparent 0,transparent 31px,var(--line) 31px,var(--line) 32px);line-height:32px;font-size:17px}
+.letter p{margin:0 0 32px}
+.letter .sign{font-family:"Caveat","Segoe Script",cursive;font-size:30px;margin:0}
+.grade{font-family:"Caveat","Segoe Script",cursive;font-size:44px;color:var(--red);transform:rotate(-4deg);display:inline-block;margin:4px 0 8px}
+[hidden]{display:none!important}
+#hearts{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:5}
+#hearts span{position:absolute;bottom:-30px;animation:rise 4.5s ease-in forwards}
+@keyframes rise{to{transform:translateY(-110vh) rotate(25deg);opacity:0}}
+@media (prefers-reduced-motion:reduce){.opt.wrong{animation:none}#hearts{display:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<main>
+<div class="sheet">
+<h1>Prova da Duda</h1>
+<div class="meta"><span>Aluna: Duda</span><span>Matéria: a nossa história</span></div>
+<p><span class="rules">Seis questões de múltipla escolha. Só uma alternativa está certa, e errar não tira ponto. Acertando todas, você chega ao tesouro.</span></p>
+<div id="qs"></div>
+<div class="final" id="final" hidden>
+<div class="grade">Nota: 10</div>
+<p>Você chegou ao tesouro.<br>Nenhuma dessas questões foi escolhida por acaso: cada uma existe porque você deixou uma lembrança em mim.</p>
+<button type="button" class="btn" id="open">Abrir o tesouro</button>
+<div class="letter" id="letter" hidden></div>
+</div>
+</div>
+</main>
+<div id="hearts" aria-hidden="true"></div>
+<script>
+var Q=[
+{q:"Onde foi que eu te vi pela primeira vez e pensei “caramba…”?",o:["No cinema","No carro, na festa","Na pizzaria","Na fila do mercado"],a:1,h:"Dica da professora: você estava dentro de um carro.",s:"Naquele dia eu já tinha achado você linda. O detalhe é que você fazia questão de deixar claro que eu não tinha a menor chance. Você mal olhava pra mim."},
+{q:"O que você me passou naquela festa, mesmo sem me dar muita moral?",o:["Seu telefone","Um bilhete","Seu Instagram","Nada, eu tive que insistir"],a:2,h:"Foi algo que mudou tudo, e que eu usei pra te chamar logo depois.",s:"Ainda bem."},
+{q:"Qual foi o programa do nosso primeiro encontro, com um filme horrível escolhido por mim?",o:["Cinema","Pizzaria","Praia","Show"],a:0,h:"O filme era tão ruim que eu ainda não entendo por que você aceitou sair comigo de novo.",s:"Até hoje eu não sei se você lembra mais do encontro ou do trauma cinematográfico."},
+{q:"“Só pra te ajudar, não me chama de ______, é broxante.” Complete.",o:["Princesa","Amor","Gatinha","Docinho"],a:2,h:"Você me ensinou essa regra pra eu continuar tendo alguma chance.",s:"Uma das memórias que nunca vão deixar de ser engraçadas pra mim."},
+{q:"Quando foi que eu percebi que já não era só “ela é linda” e que eu estava gostando muito?",o:["Quando você ganhou de mim em um jogo","Quando você deitou no meu colo, no carro","Quando você me deixou no vácuo","Quando você roubou minha batata"],a:1,h:"Foi dentro do carro, e eu reparei nos seus olhinhos.",s:"Talvez você nem tenha percebido. Mas foi ali que aqueles dois olhinhos lindos começaram a me dar um problema sério. ❤️"},
+{q:"Qual lugar de Itabuna ficou mais especial pra mim por sua causa?",o:["A pizzaria","O cinema","A praça","O lugar mais alto da cidade"],a:3,h:"Foi onde eu te levei pra ver a cidade lá de cima.",s:"Última questão. Pode respirar."}
+];
+var L=["Duda,","Se você chegou até aqui, é porque conseguiu passar por todas as pistas. KKKKK. Mas, pensando bem, acho que nenhuma delas foi tão difícil quanto a primeira. Porque a primeira era voltar para o começo. E, quando eu penso no começo de tudo, eu sempre volto para aquela festa.","Eu lembro de te ver naquele carro pela primeira vez e pensar que você era muito linda. O problema é que, aparentemente, você tinha decidido que eu não existia KKKKK. Você mal olhava pra mim. E mesmo assim, no fim daquela noite, você me passou seu Instagram. Ainda bem. Porque, de todas as pequenas decisões daquela noite, talvez essa tenha sido uma das que mais mudaram meus últimos meses.","Depois veio nosso primeiro encontro. O cinema com aquele filme HORRÍVEL que eu escolhi e que, sinceramente, até hoje não sei como você não usou como motivo pra nunca mais sair comigo. E, no meio de tudo isso, foram aparecendo aquelas pequenas coisas que te fizeram deixar de ser só a menina linda que eu conheci naquela festa e virar alguém que eu realmente queria conhecer cada vez mais. Até você soltar: “Só pra te ajudar, não me chama de gatinha, é broxante.” KKKKKKKK. Acho que nunca vou esquecer isso.","E acho que é justamente dessas pequenas coisas que eu gosto tanto quando penso na gente. Gosto da sua personalidade, do seu jeito sincero, da sua transparência, do jeito que você deixa as coisas acontecerem sem forçar nada. Gosto quando você entra no modo tagarela e começa a falar de tudo. Gosto quando bate o sono e você fica toda diferente. Gosto quando você vira uma bebê quando está comigo. Gosto até da minha pequena ansiosa, estressada e multifacetada. KKKKK.","E teve um momento que, talvez sem você perceber, mudou alguma coisa dentro de mim. Quando você deitou no meu colo pela primeira vez, naquele carro, e eu olhei para aqueles seus olhinhos. Naquele momento eu percebi que já não era só sobre achar você linda. Eu estava começando a gostar de você. Muito.","Desde então surgiram momentos que eu vou guardar por muito tempo. Nossa primeira cartinha. O dia da pizzaria. O dia em que te levei para o lugar mais alto de Itabuna e a gente ficou lá, vendo a cidade de cima. Talvez pareçam coisas simples para qualquer outra pessoa. Mas não são simples pra mim, porque foram vividas com você.","E talvez seja isso que eu mais gosto em tudo que está acontecendo entre a gente: eu não sinto que preciso transformar cada momento em algo enorme. Eu gosto de deixar acontecer. Gosto de poder ser sincero com você. Gosto de saber que existe transparência entre nós. E gosto de pensar que ainda tem tanta coisa que a gente nem viveu.","Então, se existe uma coisa que eu queria que você encontrasse no final dessa caça ao tesouro, não era uma coisa escondida. Era uma certeza. Eu queria que você tivesse certeza de uma coisa: eu gosto MUITO de você. Muito mais do que talvez eu consiga demonstrar em algumas situações. Gosto da pessoa que você é, das pequenas coisas que você faz, dos momentos que a gente vive e, principalmente, de quem eu sou quando estou com você.","E eu não sei exatamente onde tudo isso vai chegar. Mas, sinceramente? Eu não tenho pressa de descobrir. Eu só quero continuar vivendo. Mais encontros, mais conversas, mais risadas, mais momentos aleatórios, mais cartinhas, mais memórias que um dia vão fazer a gente olhar pra trás e pensar em como tudo começou.","Porque, no fim, acho que esse é o verdadeiro tesouro dessa história. Não é saber onde ela vai terminar. É ter encontrado alguém que eu quero muito continuar conhecendo. E essa pessoa é você."];
+var qs=document.getElementById("qs"),fin=document.getElementById("final"),box=[];
+Q.forEach(function(x,i){
+var d=document.createElement("section");d.className="q";d.hidden=i>0;
+var h="<h2>"+(i+1)+") "+x.q+"</h2>";
+x.o.forEach(function(t,j){h+="<button type=\"button\" class=\"opt\"><b>"+"ABCD".charAt(j)+")</b><span>"+t+"</span></button>"});
+h+="<p class=\"note\" hidden></p><p class=\"story\" hidden></p>";
+d.innerHTML=h;qs.appendChild(d);box.push(d);
+var bs=d.querySelectorAll(".opt"),note=d.querySelector(".note"),st=d.querySelector(".story");
+bs.forEach(function(b,j){b.addEventListener("click",function(){
+if(d.classList.contains("done")||b.classList.contains("wrong"))return;
+if(j===x.a){b.classList.add("right");d.classList.add("done");note.className="note ok";note.textContent="Acertou! ✔";note.hidden=false;st.textContent=x.s;st.hidden=false;
+setTimeout(function(){var n=box[i+1];if(n){n.hidden=false;n.scrollIntoView({behavior:"smooth",block:"start"})}else{fin.hidden=false;fin.scrollIntoView({behavior:"smooth",block:"start"})}},1400);
+}else{b.classList.add("wrong");note.className="note";note.textContent="Quase! "+x.h;note.hidden=false}
+})});
+});
+document.getElementById("open").addEventListener("click",function(){
+var l=document.getElementById("letter");
+l.innerHTML=L.map(function(p){return "<p>"+p+"</p>"}).join("")+"<p class=\"sign\">Com carinho,<br>Gago ❤️</p>";
+l.hidden=false;this.hidden=true;l.scrollIntoView({behavior:"smooth",block:"start"});
+var hs=document.getElementById("hearts"),s=["💜","🤎","💛","💗"];
+for(var k=0;k<22;k++){var e=document.createElement("span");e.textContent=s[k%4];e.style.left=(Math.random()*95)+"%";e.style.animationDelay=(Math.random()*1.6)+"s";e.style.fontSize=(16+Math.random()*18)+"px";hs.appendChild(e)}
+setTimeout(function(){hs.innerHTML=""},7000);
+});
+</script>
+</body>
+</html>
